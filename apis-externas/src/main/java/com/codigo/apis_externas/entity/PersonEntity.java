@@ -1,8 +1,7 @@
 package com.codigo.apis_externas.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -10,6 +9,9 @@ import java.sql.Timestamp;
 @Table(name = "persons")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PersonEntity {
 
     @Id

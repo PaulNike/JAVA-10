@@ -32,17 +32,19 @@ public class PersonServiceImpl implements PersonService {
         ReniecResponse reniecResponse;
         log.info("Buscando Información para el DNI: {}", dni);
         //Ejecutando la consulta al api de reniec
-        reniecResponse = execution(dni);
+        reniecResponse = executionReniec(dni);
 
         //Preparando respuesta a entregar
-        ResponseBase responseBase = new ResponseBase();
+        /*ResponseBase responseBase = new ResponseBase();
         responseBase.setCode(2004);
         responseBase.setMessage("Todo OK!!");
         responseBase.setEntity(Optional.of(reniecResponse));
-        return responseBase;
+        return responseBase;*/
+        return buildResponse(2004,"Todo OK!!",Optional.of(reniecResponse));
+
     }
 
-    private ReniecResponse execution(String dni) {
+    private ReniecResponse executionReniec(String dni) {
         log.info("Ejecutando consulta a RENIEC API para el DNI: {}", dni);
         String tokenOk = "Bearer "+token;
         return clientReniec.getPerson(dni,tokenOk);
@@ -51,49 +53,67 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public ResponseBase<PersonEntity> registerPerson(String dni) {
         log.info("Registrando Persona con DNI: {}", dni);
-        ResponseBase responseBase = new ResponseBase();
+        //ResponseBase responseBase = new ResponseBase();
 
         //Ejecutar la consulta al cliente externo (Reniec)
-        ReniecResponse reniecResponse = execution(dni);
+        ReniecResponse reniecResponse = executionReniec(dni);
 
         if(reniecResponse == null){
-            responseBase.setCode(4000);
+            /*responseBase.setCode(4000);
             responseBase.setMessage("Ocurrio un Error no existe respuesta de Reniec!!");
             responseBase.setEntity(Optional.empty());
-            return responseBase;
+            return responseBase;*/
+            return buildResponse(4000,
+                    "Ocurrio un Error no existe respuesta de Reniec!!",
+                    Optional.empty());
         }
 
-        //Registrar a la persona
-        PersonEntity personEntity = new PersonEntity();
-        personEntity.setNames(reniecResponse.getNombres());
-        personEntity.setFullName(reniecResponse.getNombreCompleto());
-        personEntity.setLastName(reniecResponse.getApellidoPaterno());
-        personEntity.setMotherLastName(reniecResponse.getApellidoMaterno());
-        personEntity.setTypeDocument(reniecResponse.getTipoDocumento());
-        personEntity.setNumberDocument(reniecResponse.getNumeroDocumento());
-        personEntity.setCheckDigit(reniecResponse.getDigitoVerificador());
-        personEntity.setStatus(Constants.STATUS_ACTIVE);
-        personEntity.setUserCreated(Constants.USER_ADMIN);
-        personEntity.setDateCreated(new Timestamp(System.currentTimeMillis()));
+        //Preparando la entidad de Persona
+        PersonEntity personEntity = buildPersonEntity(reniecResponse);
         //Guardando a la persona
         PersonEntity personSave = personRepository.save(personEntity);
 
-        responseBase.setCode(2001);
+        /*responseBase.setCode(2001);
         responseBase.setMessage("Todo OK!!");
         responseBase.setEntity(Optional.of(personSave));
 
-        return responseBase;
+        return responseBase;*/
+        return buildResponse(2001,"Todo OK!!",Optional.of(personSave));
     }
 
     @Override
     public ResponseBase<List<PersonEntity>> findPersonActive() {
-        ResponseBase responseBase = new ResponseBase();
+        //ResponseBase responseBase = new ResponseBase();
         List<PersonEntity> listPersonActive =
                 personRepository.findAllByStatus(Constants.STATUS_ACTIVE);
 
-        responseBase.setCode(2001);
+        /*responseBase.setCode(2001);
         responseBase.setMessage("Todo OK!!");
         responseBase.setEntity(Optional.of(listPersonActive));
-        return responseBase;
+        return responseBase;*/
+        return buildResponse(2001,"Todo OK!!", Optional.of(listPersonActive));
+    }
+
+    private <T> ResponseBase<T> buildResponse(
+            int code, String message, Optional<T> optional){
+        ResponseBase<T> responseBase = new ResponseBase<>();
+        responseBase.setCode(code);
+        responseBase.setMessage(message);
+        responseBase.setEntity(optional);
+        return  responseBase;
+    }
+    private PersonEntity buildPersonEntity(ReniecResponse reniecResponse){
+        return PersonEntity.builder()
+                .names(reniecResponse.getNombres())
+                .fullName(reniecResponse.getNombreCompleto())
+                .lastName(reniecResponse.getApellidoPaterno())
+                .motherLastName(reniecResponse.getApellidoMaterno())
+                .typeDocument(reniecResponse.getTipoDocumento())
+                .numberDocument(reniecResponse.getNumeroDocumento())
+                .checkDigit(reniecResponse.getDigitoVerificador())
+                .status(Constants.STATUS_ACTIVE)
+                .userCreated(Constants.USER_ADMIN)
+                .dateCreated(new Timestamp(System.currentTimeMillis()))
+                .build();
     }
 }
