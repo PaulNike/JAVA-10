@@ -13,4 +13,6 @@ public class ReniecResponse {
     private String tipoDocumento;
     private String numeroDocumento;
     private String digitoVerificador;
+    private TipoDocumento tiposDocumento;
+    private TipoPersona tipoPersona;
 }

@@ -20,6 +20,7 @@ public class PersonEntity {
     private String motherLastName;
     private String fullName;
     private String typeDocument;
+    @Column(unique = true)
     private String numberDocument;
     private String checkDigit;
     private String status;
