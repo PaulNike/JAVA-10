@@ -2,6 +2,7 @@ package com.codigo.restTemplate.service.impl;
 
 import com.codigo.restTemplate.aggregates.constants.Constants;
 import com.codigo.restTemplate.aggregates.response.ReniecResponse;
+import com.codigo.restTemplate.exception.ConsultaReniecException;
 import com.codigo.restTemplate.service.ReniecClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +11,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -35,14 +37,18 @@ public class ReniecClientServiceImpl implements ReniecClientService {
             );
 
             if(response.getStatusCode() == HttpStatus.OK){
-                return Optional.of(response.getBody());
+                return Optional.ofNullable(response.getBody());
             }else {
-                log.warn("Respuesta Inesperada del servicio de RENIEC: {}", response.getStatusCode());
+                //log.warn("Respuesta Inesperada del servicio de RENIEC: {}", response.getStatusCode());
+                throw new ConsultaReniecException("Respuesta Inesperada del servicio de RENIEC. Codigo: "
+                        + response.getStatusCode());
             }
         } catch (Exception e){
-            log.error("Respuesta Inesperada del servicio de RENIEC: {}", dni, e);
+            //log.error("Respuesta Inesperada del servicio de RENIEC: {}", dni, e);
+            throw new ConsultaReniecException("Respuesta Inesperada del servicio de RENIEC: {}"+ dni, e);
+
         }
-        return Optional.empty();
+        //return Optional.empty();
     }
 
     private HttpHeaders createHeaders() {
