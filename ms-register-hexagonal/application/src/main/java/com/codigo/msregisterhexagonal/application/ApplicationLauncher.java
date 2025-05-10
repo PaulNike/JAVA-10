@@ -8,6 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication
 @ComponentScan("com.codigo.*")
@@ -15,6 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableFeignClients("com.codigo.*")
 @ImportAutoConfiguration({FeignAutoConfiguration.class})
 @EnableJpaRepositories("com.codigo")
+@EnableMongoRepositories("com.codigo")
 public class ApplicationLauncher {
     public static void main(String[] args){
         SpringApplication.run(ApplicationLauncher.class, args);
