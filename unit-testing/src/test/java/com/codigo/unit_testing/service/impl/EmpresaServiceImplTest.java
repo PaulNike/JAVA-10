@@ -13,6 +13,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -65,6 +68,79 @@ class EmpresaServiceImplTest {
         assertEquals(Constants.CODE_OK, resultado.getBody().getCode());
         assertTrue(resultado.getBody().getObjeto().isPresent());
         assertSame(empresa, resultado.getBody().getObjeto().get());
+    }
+
+    @Test
+    @DisplayName("Deberia obtener empresa por ID si existe")
+    void testDeberiaObtenerEmpresaPorId(){
+        //ARRANGE
+        //Long id = 1L;
+        when(empresaRepository.findById(any())).thenReturn(Optional.of(empresa));
+        //ACT
+        ResponseEntity<BaseResponse<Empresa>> resultado = empresaService.obtenerEmpresa(1L);
+        //ASSERT
+        assertEquals(Constants.CODE_OK, resultado.getBody().getCode());
+        assertTrue(resultado.getBody().getObjeto().isPresent());
+    }
+
+    @Test
+    @DisplayName("Deberia retornar mensaje si empresa no existe")
+    void testDeberiaRetornarEmpresaNoExistente(){
+        //ARRANGE
+        when(empresaRepository.findById(any())).thenReturn(Optional.empty());
+        //ACT
+        ResponseEntity<BaseResponse<Empresa>> resultado = empresaService.obtenerEmpresa(1L);
+        //ASSERT
+        assertEquals(Constants.CODE_EMPRESA_NO_EXIST, resultado.getBody().getCode());
+        assertFalse(resultado.getBody().getObjeto().isPresent());
+    }
+
+    @Test
+    @DisplayName("Deberia listar empresas si existen")
+    void testDeberiaListarEmpresas(){
+        //arrange
+        when(empresaRepository.findAll()).thenReturn(List.of(empresa));
+        //act
+        ResponseEntity<BaseResponse<List<Empresa>>> resultado = empresaService.obtenerTodos();
+        //assert
+        assertEquals(Constants.CODE_OK, resultado.getBody().getCode());
+        assertEquals(1, resultado.getBody().getObjeto().get().size());
+    }
+
+    @Test
+    @DisplayName("Deberia retornar vacio si no existen empresas")
+    void testDeberiaRetornarListaVacia(){
+        //Arrange
+        when(empresaRepository.findAll()).thenReturn(List.of());
+        //Act
+        ResponseEntity<BaseResponse<List<Empresa>>> resultado = empresaService.obtenerTodos();
+        //Assert
+        assertEquals(Constants.CODE_EMPRESA_NO_EXIST, resultado.getBody().getCode());
+        assertFalse(resultado.getBody().getObjeto().isPresent());
+    }
+
+    @Test
+    @DisplayName("Deberia retornar mensaje si empresa no existe al actualizar")
+    void testDeberiaRetornarNoExisteEnActualizacion(){
+        when(empresaRepository.existsById(any())).thenReturn(false);
+        ResponseEntity<BaseResponse<Empresa>> resultado =
+                empresaService.actualizar(1L,empresaRequest);
+
+        assertEquals(Constants.CODE_EMPRESA_NO_EXIST, resultado.getBody().getCode());
+        assertFalse(resultado.getBody().getObjeto().isPresent());
+    }
+
+    @Test
+    @DisplayName("Deberia Lanzar una excepcion si empresa no se encuenta al actualizar")
+    void testDeberiaLanzarExcepcionAlObtenerEmpresaParaActualizar(){
+        when(empresaRepository.existsById(any())).thenReturn(true);
+        when(empresaRepository.findById(any())).thenReturn(Optional.empty());
+
+        //Act && Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () ->
+                empresaService.actualizar(1L, empresaRequest));
+        assertEquals("Empresa no encontrada", exception.getMessage());
+
     }
 
 }
