@@ -27,7 +27,6 @@
 		<sonar.organization>codigo-tecsup</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.exclusions>
-			**/com/codigo/unit_testing/controller/EmpresaController.java,
 			**/com/codigo/unit_testing/aggregates/constants/Constants.java,
 			**/com/codigo/unit_testing/UnitTestingApplication.java
 		</sonar.exclusions>
