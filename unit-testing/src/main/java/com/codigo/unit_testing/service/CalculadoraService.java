@@ -1,5 +1,8 @@
 package com.codigo.unit_testing.service;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class CalculadoraService {
     public int sumar(int a, int b){
         return a + b;
@@ -26,6 +29,6 @@ public class CalculadoraService {
     }
 
     public void mostrarResultado(int a){
-        System.out.println("El resultado es: " + a);
+        log.info("El resultado es: " + a);
     }
 }

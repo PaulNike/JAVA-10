@@ -74,7 +74,6 @@ class EmpresaServiceImplTest {
     @DisplayName("Deberia obtener empresa por ID si existe")
     void testDeberiaObtenerEmpresaPorId(){
         //ARRANGE
-        //Long id = 1L;
         when(empresaRepository.findById(any())).thenReturn(Optional.of(empresa));
         //ACT
         ResponseEntity<BaseResponse<Empresa>> resultado = empresaService.obtenerEmpresa(1L);
@@ -142,5 +141,47 @@ class EmpresaServiceImplTest {
         assertEquals("Empresa no encontrada", exception.getMessage());
 
     }
+    @Test
+    @DisplayName("Deberia retornar un null")
+    void testDeberiaRetornarNulo(){
+        assertNull(empresaService.obtenerEmpresaXNumDoc("123456789"));
+    }
+    @Test
+    @DisplayName("Deberia actualizar una empresa existente")
+    void testDeberiaActualizarEmpresa(){
+        when(empresaRepository.existsById(any())).thenReturn(true);
+        when(empresaRepository.findById(any())).thenReturn(Optional.of(empresa));
+        when(empresaRepository.save(any())).thenReturn(empresa);
+
+        ResponseEntity<BaseResponse<Empresa>> resultado = empresaService.actualizar(1L,empresaRequest);
+
+        assertEquals(Constants.CODE_OK, resultado.getBody().getCode());
+        assertTrue(resultado.getBody().getObjeto().isPresent());
+    }
+
+    @Test
+    @DisplayName("Deberia eliminar logicamente a una empresa existente")
+    void testDeberiaEliminarLogicaEmpresaExistente(){
+        when(empresaRepository.existsById(any())).thenReturn(true);
+        when(empresaRepository.findById(any())).thenReturn(Optional.of(empresa));
+        when(empresaRepository.save(any())).thenReturn(empresa);
+
+        ResponseEntity<BaseResponse<Empresa>> resultado = empresaService.delete(1L);
+
+        assertEquals(Constants.CODE_OK, resultado.getBody().getCode());
+        assertTrue(resultado.getBody().getObjeto().isPresent());
+    }
+
+    @Test
+    @DisplayName("Deberia retornar mensaje si empresa no existe")
+    void testDeberiaRetornarMensajeNoExisteEmpresaEliminar(){
+        when(empresaRepository.existsById(any())).thenReturn(false);
+        ResponseEntity<BaseResponse<Empresa>> resultado = empresaService.delete(1L);
+        assertEquals(Constants.CODE_EMPRESA_NO_EXIST, resultado.getBody().getCode());
+        assertFalse(resultado.getBody().getObjeto().isPresent());
+
+    }
+
+
 
 }

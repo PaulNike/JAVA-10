@@ -6,12 +6,10 @@ import com.codigo.unit_testing.aggregates.response.BaseResponse;
 import com.codigo.unit_testing.entity.Empresa;
 import com.codigo.unit_testing.service.EmpresaService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
