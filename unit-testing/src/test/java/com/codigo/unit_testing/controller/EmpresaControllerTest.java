@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,5 +65,32 @@ class EmpresaControllerTest {
                 .andExpect(jsonPath("$.message").value("Transacción exitosa"))
                 .andExpect(jsonPath("$.objeto.numeroDocumento").value("123456789"));
 
+    }
+
+    //LDF
+    @Test
+    @DisplayName("Deberia actualizar una empresa")
+    void testUpdateEmpresa() throws Exception{
+        EmpresaRequest empresaRequest = new EmpresaRequest();
+        empresaRequest.setNumeroDocumento("123456789");
+
+        Empresa empresa = new Empresa();
+        empresa.setId(1L);
+        empresa.setNumeroDocumento("123456789");
+
+        BaseResponse<Empresa> response = new BaseResponse<>();
+        response.setCode(Constants.CODE_OK);
+        response.setMessage(Constants.MSJ_OK);
+        response.setObjeto(Optional.of(empresa));
+        //when(empresaService.actualizar(1l, empresaRequest)).thenReturn(ResponseEntity.ok(response));
+        when(empresaService.actualizar(eq(1L),any())).thenReturn(ResponseEntity.ok(response));
+        mockMvc.perform(MockMvcRequestBuilders.put("/empresa/v1/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(empresaRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(2001))
+                .andExpect(jsonPath("$.message").value("Transacción exitosa"))
+                .andExpect(jsonPath("$.objeto.id").value(1))
+                .andExpect(jsonPath("$.objeto.numeroDocumento").value("123456789"));
     }
 }
