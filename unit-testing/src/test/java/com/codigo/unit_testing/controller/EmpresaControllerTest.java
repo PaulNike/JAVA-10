@@ -5,7 +5,6 @@ import com.codigo.unit_testing.aggregates.request.EmpresaRequest;
 import com.codigo.unit_testing.aggregates.response.BaseResponse;
 import com.codigo.unit_testing.entity.Empresa;
 import com.codigo.unit_testing.service.EmpresaService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -82,7 +80,6 @@ class EmpresaControllerTest {
         response.setCode(Constants.CODE_OK);
         response.setMessage(Constants.MSJ_OK);
         response.setObjeto(Optional.of(empresa));
-        //when(empresaService.actualizar(1l, empresaRequest)).thenReturn(ResponseEntity.ok(response));
         when(empresaService.actualizar(eq(1L),any())).thenReturn(ResponseEntity.ok(response));
         mockMvc.perform(MockMvcRequestBuilders.put("/empresa/v1/1")
                         .contentType(MediaType.APPLICATION_JSON)

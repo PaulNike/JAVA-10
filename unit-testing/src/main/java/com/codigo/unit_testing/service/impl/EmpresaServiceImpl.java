@@ -28,7 +28,7 @@ public class EmpresaServiceImpl implements EmpresaService {
         boolean exists = empresaRepository.existsByNumeroDocumento(request.getNumeroDocumento());
 
         if (exists) {
-            return buildResponse(Constants.CODE_EXIST, Constants.MSJ_EXIST, Optional.empty(), HttpStatus.OK);
+            return buildResponse(Constants.CODE_EXIST, Constants.MSJ_EXIST, Optional.empty(), HttpStatus.CONFLICT);
         }
 
         Empresa empresa = empresaRepository.save(toEntity(request));

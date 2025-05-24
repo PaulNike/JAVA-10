@@ -100,7 +100,6 @@
 						<configuration>
 							<excludes>
 								<exclude>com.codigo.unit_testing.aggregates.constants.Constants</exclude>
-								<exclude>com.codigo.unit_testing.controller.EmpresaController</exclude>
 							</excludes>
 						</configuration>
 					</execution>
