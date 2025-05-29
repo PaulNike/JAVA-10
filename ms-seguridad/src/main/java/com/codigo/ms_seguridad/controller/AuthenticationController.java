@@ -3,6 +3,7 @@ package com.codigo.ms_seguridad.controller;
 import com.codigo.ms_seguridad.aggregates.request.SignUpRequest;
 import com.codigo.ms_seguridad.entity.Usuario;
 import com.codigo.ms_seguridad.service.AuthenticationService;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -43,4 +44,18 @@ public class AuthenticationController {
         return ResponseEntity.ok(dato);
     }
 
+
+    /* String jwt = Jwts.builder()
+            .setSubject("usuario123")
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
+
+    /*
+      *{
+          "sub": "1234567890",
+          "name": "John Doe",
+          "iat": 1516239022
+        }
+    *
+    * */
 }

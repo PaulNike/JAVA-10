@@ -33,12 +33,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public Usuario signUpAdmin(SignUpRequest signUpRequest) {
-        Usuario usuario = getUsuarioEntity(signUpRequest);
+        Usuario userAdmin = getUsuarioEntity(signUpRequest);
         Set<Rol> roles = new HashSet<>();
         roles.add(getRoles(Role.USER));
         roles.add(getRoles(Role.ADMIN));
-        usuario.setRoles(roles);
-        return usuarioRepository.save(usuario);
+        userAdmin.setRoles(roles);
+        return usuarioRepository.save(userAdmin);
     }
 
     @Override
