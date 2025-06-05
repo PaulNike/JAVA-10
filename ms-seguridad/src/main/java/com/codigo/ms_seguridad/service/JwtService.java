@@ -9,8 +9,8 @@ import java.util.Map;
 public interface JwtService {
 
     String extractUserName(String token);
-    String generateToken(UserDetails userDetails, Usuario usuario);
-    boolean validateToken(String token);
+    String generateToken(Usuario usuario);
+    boolean validateToken(String token, UserDetails userDetails);
     String generateRefreshToken(Map<String, Object> extraClaims,
                                 UserDetails userDetails);
     boolean validateIsRefreshToken(String token);

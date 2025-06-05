@@ -1,6 +1,8 @@
 package com.codigo.ms_seguridad.controller;
 
+import com.codigo.ms_seguridad.aggregates.request.SignInRequest;
 import com.codigo.ms_seguridad.aggregates.request.SignUpRequest;
+import com.codigo.ms_seguridad.aggregates.response.SignInResponse;
 import com.codigo.ms_seguridad.entity.Usuario;
 import com.codigo.ms_seguridad.service.AuthenticationService;
 import io.jsonwebtoken.Jwts;
@@ -42,6 +44,16 @@ public class AuthenticationController {
         Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
         String dato = Base64.getEncoder().encodeToString(key.getEncoded());
         return ResponseEntity.ok(dato);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<SignInResponse> login(@RequestBody SignInRequest signInRequest){
+        return ResponseEntity.ok(authenticationService.signIn(signInRequest));
+    }
+
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<SignInResponse> refreshtoken(@RequestParam String refreshToken) throws IllegalAccessException {
+        return ResponseEntity.ok(authenticationService.getTokenByRefreshToken(refreshToken));
     }
 
 
