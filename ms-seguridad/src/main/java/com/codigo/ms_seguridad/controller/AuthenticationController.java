@@ -10,6 +10,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.List;
 
+@RefreshScope //(@Service, @RestController, @Component)
 @RestController
 @RequestMapping("/api/authentication/v1/")
 @RequiredArgsConstructor
@@ -25,6 +27,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
 
+    @Value("${app.message}")
+    private String prueba;
     @PostMapping("/signupuser")
     public ResponseEntity<Usuario> signUpUser(@RequestBody SignUpRequest signUpRequest){
         return ResponseEntity.ok(authenticationService.signUpUser(signUpRequest));
@@ -55,7 +59,15 @@ public class AuthenticationController {
     public ResponseEntity<SignInResponse> refreshtoken(@RequestParam String refreshToken) throws IllegalAccessException {
         return ResponseEntity.ok(authenticationService.getTokenByRefreshToken(refreshToken));
     }
+    @GetMapping("/prueba")
+    public ResponseEntity<String> getPrueba(){
+        return ResponseEntity.ok(prueba);
+    }
 
+    @PostMapping("/validate")
+    public ResponseEntity<Boolean> validateToken(@RequestParam("token") String token) {
+        return ResponseEntity.ok(authenticationService.validateToken(token));
+    }
 
     /* String jwt = Jwts.builder()
             .setSubject("usuario123")

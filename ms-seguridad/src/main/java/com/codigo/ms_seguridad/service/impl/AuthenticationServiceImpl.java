@@ -59,6 +59,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    public boolean validateToken(String token) {
+        try {
+            String username = jwtService.extractUserName(token);
+            UserDetails userDetails = usuarioService.userDetailsService()
+                    .loadUserByUsername(username);
+
+            boolean result = jwtService.validateToken(token, userDetails)
+                    && !jwtService.validateIsRefreshToken(token);
+
+            log.info("Resultado de validación del token: " + result); // LOG PARA DEPURAR
+            return result;
+        } catch (Exception e) {
+            log.info("Error al validar token: " + e.getMessage()); // LOG DE ERROR
+            return false;
+        }
+    }
+
+    @Override
     public SignInResponse signIn(SignInRequest signInRequest) {
         //Autenticación con las credenciales (eamil, password)
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail()

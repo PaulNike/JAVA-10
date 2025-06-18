@@ -42,7 +42,7 @@ public class JwtServiceImpl implements JwtService {
         claims.put("dni", usuario.getNumDoc());
 
         Date now = new Date();
-        Date expiration  = new Date(now.getTime() + 60000);
+        Date expiration  = new Date(now.getTime() + 6000000);
         return Jwts.builder()
                 .setHeaderParam("typ","JWT")
                 .setClaims(claims)

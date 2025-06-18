@@ -14,6 +14,8 @@ public interface AuthenticationService {
     Usuario signUpAdmin(SignUpRequest signUpRequest);
     List<Usuario> todos();
 
+    boolean validateToken(String token);
+
     SignInResponse signIn(SignInRequest signInRequest);
     SignInResponse getTokenByRefreshToken(String token)throws IllegalAccessException;
 
