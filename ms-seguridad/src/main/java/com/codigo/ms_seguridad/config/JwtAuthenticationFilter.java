@@ -30,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         final String tokenExtraidoHeader = request.getHeader("Authorization");
+        final String valorApiGateway = request.getHeader("X-Gateway-Auth");
         if(!StringUtils.hasText(tokenExtraidoHeader) || !tokenExtraidoHeader.startsWith("Bearer ")){
             filterChain.doFilter(request,response);
             return;
